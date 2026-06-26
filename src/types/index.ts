@@ -7,6 +7,9 @@ export interface User {
   loyaltyPoints: number
   totalTrips: number
   avatarUrl?: string
+  memberSince?: string
+  emailVerified?: boolean
+  phoneVerified?: boolean
 }
 
 export interface Pass {
@@ -19,6 +22,8 @@ export interface Pass {
   validUntil: string
   isActive: boolean
   price: number
+  activatedAt?: number // epoch ms
+  expiresAt?: number   // epoch ms (1hr from activation for QR validity)
 }
 
 export interface Route {
@@ -41,8 +46,15 @@ export interface Transaction {
   status: 'success' | 'failed' | 'pending'
 }
 
-export interface WalletState {
-  balance: number
-  loyaltyPoints: number
-  transactions: Transaction[]
+export interface Notification {
+  id: string
+  title: string
+  message: string
+  time: string
+  read: boolean
+  type: 'info' | 'success' | 'warning'
 }
+
+export type PaymentGateway = 'mpesa' | 'stripe' | 'paypal'
+export type PaymentStep = 'select' | 'processing' | 'done'
+export type PaymentStatus = 'success' | 'failed' | null

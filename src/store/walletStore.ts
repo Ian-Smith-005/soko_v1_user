@@ -2,39 +2,29 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { Transaction } from '../types'
 
-interface WalletStoreState {
+interface WalletState {
   balance: number
   loyaltyPoints: number
   transactions: Transaction[]
-  topUp: (amount: number) => void
-  addTransaction: (tx: Omit<Transaction, 'id'>) => void
+  topUp: (amount: number, method: string) => void
+  deduct: (amount: number, description: string) => void
 }
 
-const mockTransactions: Transaction[] = [
-  {
-    id: '1',
-    description: 'Weekly pass - CBD - JKIA',
-    amount: 2500,
-    type: 'debit',
-    date: 'Jun 26, 7:36 AM',
-    status: 'success',
-  },
-]
-
-export const useWalletStore = create<WalletStoreState>()(
+export const useWalletStore = create<WalletState>()(
   persist(
     (set) => ({
       balance: 0,
       loyaltyPoints: 0,
-      transactions: mockTransactions,
+      transactions: [],
 
-      topUp: (amount) =>
+      topUp: (amount, method) =>
         set((state) => ({
           balance: state.balance + amount,
+          loyaltyPoints: state.loyaltyPoints + Math.floor(amount / 10),
           transactions: [
             {
               id: Date.now().toString(),
-              description: 'M-Pesa Top Up',
+              description: `${method} Top Up`,
               amount,
               type: 'credit',
               date: new Date().toLocaleString('en-KE', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
@@ -44,9 +34,20 @@ export const useWalletStore = create<WalletStoreState>()(
           ],
         })),
 
-      addTransaction: (tx) =>
+      deduct: (amount, description) =>
         set((state) => ({
-          transactions: [{ ...tx, id: Date.now().toString() }, ...state.transactions],
+          balance: Math.max(0, state.balance - amount),
+          transactions: [
+            {
+              id: Date.now().toString(),
+              description,
+              amount,
+              type: 'debit',
+              date: new Date().toLocaleString('en-KE', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
+              status: 'success',
+            },
+            ...state.transactions,
+          ],
         })),
     }),
     { name: 'soko-wallet' }

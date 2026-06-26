@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Zap, Mail, Phone } from 'lucide-react'
+import { Mail, Phone, ArrowLeft } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
+import { useNotificationStore } from '../store/notificationStore'
 
 type Step = 'login' | 'otp'
 type Method = 'email' | 'phone'
@@ -9,59 +10,74 @@ type Method = 'email' | 'phone'
 export default function Auth() {
   const navigate = useNavigate()
   const { login } = useAuthStore()
+  const { showToast } = useNotificationStore()
   const [step, setStep] = useState<Step>('login')
   const [method, setMethod] = useState<Method>('email')
   const [value, setValue] = useState('')
+  const [valueError, setValueError] = useState('')
   const [otp, setOtp] = useState(['', '', '', '', '', ''])
   const [loading, setLoading] = useState(false)
   const otpRefs = useRef<(HTMLInputElement | null)[]>([])
 
+  const validate = () => {
+    if (!value.trim()) { setValueError('This field is required'); return false }
+    if (method === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      setValueError('Enter a valid email address'); return false
+    }
+    if (method === 'phone' && !/^0[17]\d{8}$/.test(value.replace(/\s/g, ''))) {
+      setValueError('Enter a valid Kenyan phone number'); return false
+    }
+    setValueError(''); return true
+  }
+
   const handleSendOTP = async () => {
-    if (!value.trim()) return
+    if (!validate()) return
     setLoading(true)
-    // POST /api/auth/otp/send
-    await new Promise((r) => setTimeout(r, 800))
+    await new Promise(r => setTimeout(r, 900))
     setLoading(false)
     setStep('otp')
+    showToast(`OTP sent to ${value}`, 'success')
   }
 
   const handleOtpChange = (index: number, val: string) => {
     if (!/^\d?$/.test(val)) return
-    const next = [...otp]
-    next[index] = val
-    setOtp(next)
+    const next = [...otp]; next[index] = val; setOtp(next)
     if (val && index < 5) otpRefs.current[index + 1]?.focus()
   }
 
   const handleOtpKeyDown = (index: number, e: React.KeyboardEvent) => {
-    if (e.key === 'Backspace' && !otp[index] && index > 0) {
-      otpRefs.current[index - 1]?.focus()
-    }
+    if (e.key === 'Backspace' && !otp[index] && index > 0) otpRefs.current[index - 1]?.focus()
   }
 
   const handleVerify = async () => {
     if (otp.join('').length < 6) return
     setLoading(true)
-    // POST /api/auth/otp/verify
-    await new Promise((r) => setTimeout(r, 800))
+    await new Promise(r => setTimeout(r, 900))
+    const name = method === 'email' ? value.split('@')[0] : 'Rider'
     login({
-      id: '1',
-      name: 'Smith',
-      email: 'smithiian34@gmail.com',
+      id: Date.now().toString(),
+      name: name.charAt(0).toUpperCase() + name.slice(1),
+      email: method === 'email' ? value : '',
+      phone: method === 'phone' ? value : undefined,
       loyaltyPoints: 0,
       totalTrips: 0,
+      memberSince: new Date().toISOString(),
+      emailVerified: method === 'email',
+      phoneVerified: method === 'phone',
     })
     navigate('/', { replace: true })
   }
 
   return (
     <div className="min-h-dvh bg-[#0A0A0A] flex flex-col">
-      {/* Header */}
-      <div className="flex flex-col items-center pt-16 pb-10 px-6">
-        <div className="w-20 h-20 rounded-full border-3 border-[#D4AF37] flex items-center justify-center bg-[#121212] mb-6 shadow-[0_0_30px_rgba(212,175,55,0.2)]">
-          <Zap size={32} className="text-[#22C55E]" fill="#22C55E" />
-        </div>
-        <h1 className="text-2xl font-bold text-white font-heading">SOKO TRANSIT</h1>
+      {/* Brand header */}
+      <div className="flex flex-col items-center pt-14 pb-10 px-6">
+        <img
+          src="/src/assets/soko-logo.jpeg"
+          alt="Soko Transit"
+          className="w-24 h-24 rounded-full border-4 border-[#D4AF37] gold-glow mb-6 object-cover"
+        />
+        <h1 className="text-2xl font-bold text-white font-heading tracking-wider">SOKO TRANSIT</h1>
         <p className="text-[#9CA3AF] text-sm mt-1">Move Smarter with Digital Bus Passes</p>
       </div>
 
@@ -69,15 +85,15 @@ export default function Auth() {
       <div className="flex-1 bg-white rounded-t-3xl px-6 pt-8 pb-10">
         {step === 'login' ? (
           <>
-            <h2 className="text-xl font-bold text-gray-900 mb-1">Welcome back</h2>
-            <p className="text-gray-500 text-sm mb-6">Sign in to your account</p>
+            <h2 className="text-xl font-bold text-gray-900 mb-1">Welcome</h2>
+            <p className="text-gray-500 text-sm mb-6">Sign in or create an account</p>
 
             {/* Toggle */}
             <div className="flex bg-gray-100 rounded-xl p-1 mb-6">
-              {(['email', 'phone'] as Method[]).map((m) => (
+              {(['email', 'phone'] as Method[]).map(m => (
                 <button
                   key={m}
-                  onClick={() => setMethod(m)}
+                  onClick={() => { setMethod(m); setValue(''); setValueError('') }}
                   className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                     method === m ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'
                   }`}
@@ -94,17 +110,26 @@ export default function Auth() {
             <input
               type={method === 'email' ? 'email' : 'tel'}
               value={value}
-              onChange={(e) => setValue(e.target.value)}
+              onChange={e => { setValue(e.target.value); setValueError('') }}
               placeholder={method === 'email' ? 'you@example.com' : '0712 345 678'}
-              className="w-full px-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 text-base focus:outline-none focus:ring-2 focus:ring-[#22C55E] focus:border-transparent mb-6"
+              className={`w-full px-4 py-3.5 bg-gray-50 border rounded-xl text-gray-900 placeholder-gray-400 text-base focus:outline-none focus:ring-2 focus:ring-[#22C55E] focus:border-transparent mb-1 transition-all ${
+                valueError ? 'border-red-400' : 'border-gray-200'
+              }`}
             />
+            {valueError && <p className="text-red-400 text-xs mb-3">{valueError}</p>}
+            {!valueError && <div className="mb-6" />}
 
             <button
               onClick={handleSendOTP}
               disabled={loading || !value.trim()}
               className="w-full py-4 bg-[#22C55E] text-white font-semibold rounded-xl text-base disabled:opacity-50 transition-all active:scale-[0.98]"
             >
-              {loading ? 'Sending...' : 'Continue'}
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                  Sending…
+                </span>
+              ) : 'Continue'}
             </button>
 
             <div className="flex items-center gap-3 my-6">
@@ -125,25 +150,25 @@ export default function Auth() {
           </>
         ) : (
           <>
-            <button onClick={() => setStep('login')} className="text-[#22C55E] text-sm font-medium mb-6">
-              ← Back
+            <button onClick={() => setStep('login')} className="flex items-center gap-1 text-[#22C55E] text-sm font-medium mb-6">
+              <ArrowLeft size={16} /> Back
             </button>
-            <h2 className="text-xl font-bold text-gray-900 mb-1">Enter OTP</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-1">Check your {method === 'email' ? 'inbox' : 'messages'}</h2>
             <p className="text-gray-500 text-sm mb-8">
-              We sent a 6-digit code to <span className="font-medium text-gray-700">{value}</span>
+              6-digit code sent to <span className="font-medium text-gray-700">{value}</span>
             </p>
 
             <div className="flex gap-3 justify-center mb-8">
               {otp.map((digit, i) => (
                 <input
                   key={i}
-                  ref={(el) => { otpRefs.current[i] = el }}
+                  ref={el => { otpRefs.current[i] = el }}
                   type="text"
                   inputMode="numeric"
                   maxLength={1}
                   value={digit}
-                  onChange={(e) => handleOtpChange(i, e.target.value)}
-                  onKeyDown={(e) => handleOtpKeyDown(i, e)}
+                  onChange={e => handleOtpChange(i, e.target.value)}
+                  onKeyDown={e => handleOtpKeyDown(i, e)}
                   className="w-12 h-14 text-center text-xl font-bold bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#22C55E] transition-colors"
                 />
               ))}
@@ -154,14 +179,17 @@ export default function Auth() {
               disabled={loading || otp.join('').length < 6}
               className="w-full py-4 bg-[#22C55E] text-white font-semibold rounded-xl text-base disabled:opacity-50 transition-all active:scale-[0.98]"
             >
-              {loading ? 'Verifying...' : 'Verify & Sign In'}
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                  Verifying…
+                </span>
+              ) : 'Verify & Sign In'}
             </button>
 
             <p className="text-center text-gray-500 text-sm mt-4">
               Didn't receive it?{' '}
-              <button className="text-[#22C55E] font-medium" onClick={handleSendOTP}>
-                Resend
-              </button>
+              <button className="text-[#22C55E] font-medium" onClick={handleSendOTP}>Resend</button>
             </p>
           </>
         )}

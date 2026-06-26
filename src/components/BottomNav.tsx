@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { Home, MapPin, QrCode, Wallet, User } from 'lucide-react'
+import { useAuthStore } from '../store/authStore'
 
 const tabs = [
   { path: '/', label: 'Home', Icon: Home },
@@ -10,8 +11,11 @@ const tabs = [
 ]
 
 export default function BottomNav() {
+  const { isDarkMode } = useAuthStore()
+  const dark = isDarkMode
+
   return (
-    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] bg-[#121212] border-t border-[#2A2A2A] z-50">
+    <nav className={`fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] z-50 ${dark ? 'bg-[#121212] border-t border-[#2A2A2A]' : 'bg-white border-t border-gray-200'}`}>
       <div className="flex items-center justify-around px-2 py-2 pb-safe">
         {tabs.map(({ path, label, Icon }) => (
           <NavLink
@@ -20,7 +24,7 @@ export default function BottomNav() {
             end={path === '/'}
             className={({ isActive }) =>
               `flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all duration-200 min-w-[48px] ${
-                isActive ? 'text-[#22C55E]' : 'text-[#6B7280]'
+                isActive ? 'text-[#22C55E]' : dark ? 'text-[#6B7280]' : 'text-gray-400'
               }`
             }
             aria-label={label}
@@ -28,12 +32,8 @@ export default function BottomNav() {
             {({ isActive }) => (
               <>
                 {path === '/qr' ? (
-                  <span
-                    className={`p-1.5 rounded-xl transition-all duration-200 ${
-                      isActive ? 'bg-[#22C55E]' : ''
-                    }`}
-                  >
-                    <Icon size={20} className={isActive ? 'text-white' : 'text-[#6B7280]'} />
+                  <span className={`p-1.5 rounded-xl transition-all duration-200 ${isActive ? 'bg-[#22C55E]' : ''}`}>
+                    <Icon size={20} className={isActive ? 'text-white' : dark ? 'text-[#6B7280]' : 'text-gray-400'} />
                   </span>
                 ) : (
                   <Icon size={20} />

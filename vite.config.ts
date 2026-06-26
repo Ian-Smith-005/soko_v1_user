@@ -7,7 +7,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'icons/*.png'],
+      includeAssets: ['favicon.ico', 'icons/*.png', 'loading.mp4'],
       manifest: {
         name: 'Soko Transit',
         short_name: 'Soko Transit',
@@ -23,8 +23,17 @@ export default defineConfig({
         ]
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2,mp4}'],
+        maximumFileSizeToCacheInBytes: 15 * 1024 * 1024,
         runtimeCaching: [
+          {
+            urlPattern: /\/loading\.mp4$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'video-cache',
+              expiration: { maxEntries: 2, maxAgeSeconds: 60 * 60 * 24 * 30 }
+            }
+          },
           {
             urlPattern: /^https:\/\/api\./,
             handler: 'NetworkFirst',

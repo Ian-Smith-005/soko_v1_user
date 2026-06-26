@@ -7,28 +7,24 @@ interface PassState {
   passes: Pass[]
   setActivePass: (pass: Pass | null) => void
   addPass: (pass: Pass) => void
-}
-
-const mockPass: Pass = {
-  id: '1',
-  passCode: 'SOKO-1782459392937-KAYMMA',
-  route: 'CBD - JKIA',
-  plan: 'Weekly',
-  tripsLeft: 14,
-  totalTrips: 14,
-  validUntil: 'Jul 3, 2026',
-  isActive: true,
-  price: 2500,
+  activateQR: () => void
 }
 
 export const usePassStore = create<PassState>()(
   persist(
     (set) => ({
-      activePass: mockPass,
-      passes: [mockPass],
+      activePass: null,
+      passes: [],
       setActivePass: (pass) => set({ activePass: pass }),
       addPass: (pass) =>
         set((state) => ({ passes: [...state.passes, pass], activePass: pass })),
+      activateQR: () =>
+        set((state) => {
+          if (!state.activePass) return state
+          const now = Date.now()
+          const updated = { ...state.activePass, activatedAt: now, expiresAt: now + 60 * 60 * 1000 }
+          return { activePass: updated, passes: state.passes.map(p => p.id === updated.id ? updated : p) }
+        }),
     }),
     { name: 'soko-passes' }
   )

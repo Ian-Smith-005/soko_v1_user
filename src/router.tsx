@@ -7,6 +7,7 @@ import Routes from './pages/Routes'
 import QRPass from './pages/QRPass'
 import Wallet from './pages/Wallet'
 import Profile from './pages/Profile'
+import Notifications from './pages/Notifications'
 import { useAuthStore } from './store/authStore'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -31,7 +32,8 @@ export const router = createBrowserRouter([
       { path: 'qr', element: <QRPass /> },
       { path: 'wallet', element: <Wallet /> },
       { path: 'profile', element: <Profile /> },
+      { path: 'notifications', element: <Notifications /> },
     ],
   },
-  { path: '*', element: <Navigate to="/" replace /> },
+  { path: '*', element: <Navigate to="/splash" replace /> },
 ])

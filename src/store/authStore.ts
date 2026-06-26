@@ -5,11 +5,11 @@ import type { User } from '../types'
 interface AuthState {
   user: User | null
   isAuthenticated: boolean
-  isLoading: boolean
+  isDarkMode: boolean
   login: (user: User) => void
   logout: () => void
   updateUser: (data: Partial<User>) => void
-  setLoading: (loading: boolean) => void
+  toggleDarkMode: () => void
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -17,18 +17,24 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       user: null,
       isAuthenticated: false,
-      isLoading: false,
+      isDarkMode: true,
 
       login: (user) => set({ user, isAuthenticated: true }),
-
       logout: () => set({ user: null, isAuthenticated: false }),
-
       updateUser: (data) =>
-        set((state) => ({
-          user: state.user ? { ...state.user, ...data } : null,
-        })),
-
-      setLoading: (isLoading) => set({ isLoading }),
+        set((state) => ({ user: state.user ? { ...state.user, ...data } : null })),
+      toggleDarkMode: () =>
+        set((state) => {
+          const next = !state.isDarkMode
+          if (next) {
+            document.getElementById('root')?.classList.add('light-mode')
+            document.body.classList.add('light-mode')
+          } else {
+            document.getElementById('root')?.classList.remove('light-mode')
+            document.body.classList.remove('light-mode')
+          }
+          return { isDarkMode: next }
+        }),
     }),
     { name: 'soko-auth' }
   )

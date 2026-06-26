@@ -6,3 +6,6 @@ dist-ssr
 .env.*
 !.env.example
 .DS_Store
+CLOUDFLARE_DEPLOYMENT.md
+SETUP.md
+*.md
