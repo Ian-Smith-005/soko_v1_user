@@ -34,7 +34,7 @@ export default function Home() {
       {/* Fixed top bar */}
       <div className={`sticky top-0 z-40 px-5 pt-4 pb-4 flex items-center justify-between ${dark ? 'bg-[#0A0A0A]' : 'bg-white'}`}>
         <div className="flex items-center gap-3">
-          <img src="/src/assets/soko-logo.jpeg" alt="Soko" className="w-9 h-9 rounded-full border-2 border-[#D4AF37] object-cover" />
+          <img src="/soko-logo.jpeg" alt="Soko" className="w-9 h-9 rounded-full border-2 border-[#D4AF37] object-cover" />
           <div>
             <p className={`text-xs ${dark ? 'text-[#9CA3AF]' : 'text-gray-500'}`}>{getGreeting()}</p>
             <h1 className={`text-base font-bold ${dark ? 'text-white' : 'text-gray-900'}`}>

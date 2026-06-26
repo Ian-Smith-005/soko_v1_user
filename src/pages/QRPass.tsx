@@ -106,7 +106,7 @@ export default function QRPass() {
                 <canvas ref={canvasRef} className="block" />
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                   <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center shadow">
-                    <img src="/src/assets/soko-logo.jpeg" className="w-8 h-8 rounded-full object-cover" alt="logo" />
+                    <img src="/soko-logo.jpeg" className="w-8 h-8 rounded-full object-cover" alt="logo" />
                   </div>
                 </div>
               </div>

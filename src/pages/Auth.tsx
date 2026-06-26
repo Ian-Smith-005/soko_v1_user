@@ -72,11 +72,13 @@ export default function Auth() {
     <div className="min-h-dvh bg-[#0A0A0A] flex flex-col">
       {/* Brand header */}
       <div className="flex flex-col items-center pt-14 pb-10 px-6">
-        <img
-          src="/src/assets/soko-logo.jpeg"
-          alt="Soko Transit"
-          className="w-24 h-24 rounded-full border-4 border-[#D4AF37] gold-glow mb-6 object-cover"
-        />
+        <div className="w-24 h-24 rounded-full border-4 border-[#D4AF37] mb-6 overflow-hidden shadow-[0_0_24px_rgba(212,175,55,0.3)]">
+          <img
+            src="/soko-logo.jpeg"
+            alt="Soko Transit"
+            className="w-full h-full object-cover"
+          />
+        </div>
         <h1 className="text-2xl font-bold text-white font-heading tracking-wider">SOKO TRANSIT</h1>
         <p className="text-[#9CA3AF] text-sm mt-1">Move Smarter with Digital Bus Passes</p>
       </div>
@@ -169,7 +171,12 @@ export default function Auth() {
                   value={digit}
                   onChange={e => handleOtpChange(i, e.target.value)}
                   onKeyDown={e => handleOtpKeyDown(i, e)}
-                  className="w-12 h-14 text-center text-xl font-bold bg-gray-50 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#22C55E] transition-colors"
+                  className="w-12 h-14 text-center text-2xl font-bold bg-white border-2 rounded-xl focus:outline-none transition-all"
+                  style={{
+                    color: digit ? '#22C55E' : '#9CA3AF',
+                    borderColor: digit ? '#22C55E' : '#E5E7EB',
+                    boxShadow: digit ? '0 0 0 3px rgba(34,197,94,0.12)' : 'none',
+                  }}
                 />
               ))}
             </div>

@@ -7,7 +7,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'icons/*.png', 'loading.mp4'],
+      includeAssets: ['favicon.png', 'apple-touch-icon.png', 'soko-logo.jpeg', 'icons/*.png', 'loading.mp4'],
       manifest: {
         name: 'Soko Transit',
         short_name: 'Soko Transit',
