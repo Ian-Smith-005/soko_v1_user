@@ -65,7 +65,7 @@ export default function QRPass() {
           </div>
           <p className="text-white font-semibold text-lg">No active pass</p>
           <p className="text-[#6B7280] text-sm">Purchase a pass to get your QR code</p>
-          <button onClick={() => navigate('/routes')} className="mt-2 flex items-center gap-2 bg-[#22C55E] text-white font-semibold px-6 py-3.5 rounded-xl">
+          <button onClick={() => navigate('/app/routes')} className="mt-2 flex items-center gap-2 bg-[#22C55E] text-white font-semibold px-6 py-3.5 rounded-xl">
             <ShoppingBag size={16} /> Buy a Pass
           </button>
         </div>

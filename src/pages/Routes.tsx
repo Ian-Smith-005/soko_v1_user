@@ -155,7 +155,7 @@ function BuyPassModal({ route, onClose }: { route: Route; onClose: () => void })
     deduct(price, `${plan.label} Pass – ${route.name}`)
     showToast(`${plan.label} pass purchased! View your QR.`, 'success')
     onClose()
-    navigate('/qr')
+    navigate('/app/qr')
   }
 
   return (
@@ -195,7 +195,7 @@ function BuyPassModal({ route, onClose }: { route: Route; onClose: () => void })
           {canAfford ? `Confirm Purchase – KES ${price.toLocaleString()}` : 'Insufficient Balance'}
         </button>
         {!canAfford && (
-          <button onClick={() => { onClose(); navigate('/wallet') }} className="w-full mt-2 py-3 text-[#22C55E] text-sm font-medium">
+          <button onClick={() => { onClose(); navigate('/app/wallet') }} className="w-full mt-2 py-3 text-[#22C55E] text-sm font-medium">
             Top Up Wallet
           </button>
         )}

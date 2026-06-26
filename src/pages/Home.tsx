@@ -43,7 +43,7 @@ export default function Home() {
           </div>
         </div>
         <button
-          onClick={() => navigate('/notifications')}
+          onClick={() => navigate('/app/notifications')}
           className="relative w-11 h-11 bg-[#1F1F1F] rounded-xl flex items-center justify-center shadow-md"
           aria-label="Notifications"
         >
@@ -60,7 +60,7 @@ export default function Home() {
           <div
             className="rounded-2xl p-5 cursor-pointer active:scale-[0.98] transition-transform"
             style={{ background: 'linear-gradient(135deg, #1a1a1a 0%, #0f2010 100%)' }}
-            onClick={() => navigate('/qr')}
+            onClick={() => navigate('/app/qr')}
           >
             <div className="flex items-center gap-2 mb-3">
               <div className="w-8 h-8 bg-[#22C55E]/20 rounded-lg flex items-center justify-center">
@@ -87,7 +87,7 @@ export default function Home() {
         ) : (
           <div
             className="rounded-2xl p-5 bg-[#1F1F1F] flex items-center justify-between cursor-pointer active:scale-[0.98] transition-transform border border-[#D4AF37]/20"
-            onClick={() => navigate('/routes')}
+            onClick={() => navigate('/app/routes')}
           >
             <div>
               <p className="text-[#9CA3AF] text-sm">No active pass</p>
@@ -118,7 +118,7 @@ export default function Home() {
               <CreditCard size={16} className="text-[#9CA3AF]" />
               <span className="text-[#9CA3AF] text-sm">Wallet Balance</span>
             </div>
-            <button onClick={() => navigate('/wallet')} className="text-[#22C55E] text-sm font-semibold">+ Top Up</button>
+            <button onClick={() => navigate('/app/wallet')} className="text-[#22C55E] text-sm font-semibold">+ Top Up</button>
           </div>
           <p className="text-white text-2xl font-bold">KES {balance.toLocaleString()}</p>
           <div className="flex items-center gap-1.5 mt-2">

@@ -3,11 +3,11 @@ import { Home, MapPin, QrCode, Wallet, User } from 'lucide-react'
 import { useAuthStore } from '../store/authStore'
 
 const tabs = [
-  { path: '/', label: 'Home', Icon: Home },
-  { path: '/routes', label: 'Routes', Icon: MapPin },
-  { path: '/qr', label: 'QR Pass', Icon: QrCode },
-  { path: '/wallet', label: 'Wallet', Icon: Wallet },
-  { path: '/profile', label: 'Profile', Icon: User },
+  { path: '/app', label: 'Home', Icon: Home },
+  { path: '/app/routes', label: 'Routes', Icon: MapPin },
+  { path: '/app/qr', label: 'QR Pass', Icon: QrCode },
+  { path: '/app/wallet', label: 'Wallet', Icon: Wallet },
+  { path: '/app/profile', label: 'Profile', Icon: User },
 ]
 
 export default function BottomNav() {
@@ -21,7 +21,7 @@ export default function BottomNav() {
           <NavLink
             key={path}
             to={path}
-            end={path === '/'}
+            end={path === '/app'}
             className={({ isActive }) =>
               `flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all duration-200 min-w-[48px] ${
                 isActive ? 'text-[#22C55E]' : dark ? 'text-[#6B7280]' : 'text-gray-400'
@@ -31,7 +31,7 @@ export default function BottomNav() {
           >
             {({ isActive }) => (
               <>
-                {path === '/qr' ? (
+                {path === '/app/qr' ? (
                   <span className={`p-1.5 rounded-xl transition-all duration-200 ${isActive ? 'bg-[#22C55E]' : ''}`}>
                     <Icon size={20} className={isActive ? 'text-white' : dark ? 'text-[#6B7280]' : 'text-gray-400'} />
                   </span>

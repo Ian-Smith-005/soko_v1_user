@@ -65,7 +65,7 @@ export default function Auth() {
       emailVerified: method === 'email',
       phoneVerified: method === 'phone',
     })
-    navigate('/', { replace: true })
+    navigate('/app', { replace: true })
   }
 
   return (

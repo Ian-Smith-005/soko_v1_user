@@ -17,10 +17,12 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 }
 
 export const router = createBrowserRouter([
+  // Splash is the true entry point — all root-level traffic lands here first
+  { path: '/', element: <Splash /> },
   { path: '/splash', element: <Splash /> },
   { path: '/auth', element: <Auth /> },
   {
-    path: '/',
+    path: '/app',
     element: (
       <ProtectedRoute>
         <Layout />
@@ -35,5 +37,6 @@ export const router = createBrowserRouter([
       { path: 'notifications', element: <Notifications /> },
     ],
   },
-  { path: '*', element: <Navigate to="/splash" replace /> },
+  // Anything unknown → splash
+  { path: '*', element: <Navigate to="/" replace /> },
 ])
