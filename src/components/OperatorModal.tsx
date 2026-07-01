@@ -17,7 +17,7 @@ export default function OperatorModal({ onClose }: Props) {
           Conductor and operator access is available on a separate platform. Visit the link below to continue.
         </p>
         <a
-          href="https://conductor.sokotransit.com"
+          href="http://soko-v1-conductor.pages.dev/"
           target="_blank"
           rel="noopener noreferrer"
           className="w-full flex items-center justify-center gap-2 bg-[#D4AF37] text-[#0A0A0A] font-bold py-3.5 rounded-xl"
